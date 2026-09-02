@@ -149,13 +149,13 @@ function M.setup(opts)
 	if opts.safe_output ~= nil then
 		config.safe_output = opts.safe_output
 	end
-	if opts.lazy_update_context then
+	if opts.lazy_update_context ~= nil then
 		config.lazy_update_context = opts.lazy_update_context
 	end
-	if opts.click then
+	if opts.click ~= nil then
 		config.click = opts.click
 	end
-	if opts.format_text then
+	if opts.format_text ~= nil then
 		if vim.fn.has("nvim-0.11") == 1 then
 			vim.validate("format_text", opts.format_text, "function")
 		else
