@@ -125,8 +125,9 @@ function M.setup(opts)
 
 	if opts.icons ~= nil then
 		for k, v in pairs(opts.icons) do
-			if lib.adapt_lsp_str_to_num(k) then
-				config.icons[lib.adapt_lsp_str_to_num(k)] = v
+			local kind = lib.adapt_lsp_str_to_num(k)
+			if kind then
+				config.icons[kind] = v
 			end
 		end
 		if opts.icons.enabled ~= nil then
@@ -207,8 +208,9 @@ function M.format_data(data, opts)
 
 		if opts.icons ~= nil then
 			for k, v in pairs(opts.icons) do
-				if lib.adapt_lsp_str_to_num(k) then
-					local_config.icons[lib.adapt_lsp_str_to_num(k)] = v
+				local kind = lib.adapt_lsp_str_to_num(k)
+				if kind then
+					local_config.icons[kind] = v
 				end
 			end
 			if opts.icons.enabled ~= nil then
@@ -295,12 +297,10 @@ function M.format_data(data, opts)
 
 		if local_config.highlight then
 			component = add_hl(v.kind, name)
+		elseif local_config.icons.enabled then
+			component = v.icon .. name
 		else
-			if local_config.icons.enabled then
-				component = v.icon .. name
-			else
-				component = name
-			end
+			component = name
 		end
 
 		if local_config.click then
