@@ -273,20 +273,14 @@ function M.request_symbol(for_buf, handler, client, file_uri, retry_count)
 		end
 	end
     request("textDocument/documentSymbol", { textDocument = textDocument_argument }, function(err, symbols, _)
-        if err ~= nil then
-            if vim.api.nvim_buf_is_valid(for_buf) then
-                vim.defer_fn(function()
-                    M.request_symbol(for_buf, handler, client, file_uri, retry_count-1)
-                end, 750)
-            end
-        elseif symbols == nil then
-            if vim.api.nvim_buf_is_valid(for_buf) then
-                handler(for_buf, {})
-            end
-        elseif symbols ~= nil then
-            if vim.api.nvim_buf_is_loaded(for_buf) then
-                handler(for_buf, symbols)
-            end
+        if err ~= nil and vim.api.nvim_buf_is_valid(for_buf) then
+            vim.defer_fn(function()
+                M.request_symbol(for_buf, handler, client, file_uri, retry_count-1)
+            end, 750)
+        elseif symbols == nil and vim.api.nvim_buf_is_valid(for_buf) then
+            handler(for_buf, {})
+        elseif symbols ~= nil and vim.api.nvim_buf_is_loaded(for_buf) then
+            handler(for_buf, symbols)
         end
     end, for_buf)
 end
@@ -336,8 +330,7 @@ function M.update_context(for_buf, arg_cursor_pos)
 		if curr == nil then
 			break
 		end
-		if
-			in_range(cursor_pos, context.scope) == 0
+		if in_range(cursor_pos, context.scope) == 0
 			and curr.children ~= nil
 			and curr.children[context.index] ~= nil
 			and context.name == curr.children[context.index].name

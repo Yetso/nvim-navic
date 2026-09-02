@@ -61,7 +61,7 @@ local config = {
 	click = false,
 	lsp = {
 		auto_attach = false,
-		preference = nil
+		preference = nil,
 	},
 	format_text = function(a) return a end,
 }
@@ -125,8 +125,9 @@ function M.setup(opts)
 
 	if opts.icons ~= nil then
 		for k, v in pairs(opts.icons) do
-			if lib.adapt_lsp_str_to_num(k) then
-				config.icons[lib.adapt_lsp_str_to_num(k)] = v
+			local kind = lib.adapt_lsp_str_to_num(k)
+			if kind then
+				config.icons[kind] = v
 			end
 		end
 		if opts.icons.enabled ~= nil then
@@ -207,8 +208,9 @@ function M.format_data(data, opts)
 
 		if opts.icons ~= nil then
 			for k, v in pairs(opts.icons) do
-				if lib.adapt_lsp_str_to_num(k) then
-					local_config.icons[lib.adapt_lsp_str_to_num(k)] = v
+				local kind = lib.adapt_lsp_str_to_num(k)
+				if kind then
+					local_config.icons[kind] = v
 				end
 			end
 			if opts.icons.enabled ~= nil then
@@ -295,13 +297,11 @@ function M.format_data(data, opts)
 
 		if local_config.highlight then
 			component = add_hl(v.kind, name)
-		else
-			if local_config.icons.enabled then
-				component = v.icon .. name
-			else
-				component = name
-			end
-		end
+		elseif local_config.icons.enabled then
+            component = v.icon .. name
+        else
+            component = name
+        end
 
 		if local_config.click then
 			component = add_click(i, component)
@@ -394,7 +394,7 @@ function M.attach(client, bufnr)
 		buffer = bufnr,
 	})
 	if not config.lazy_update_context then
-		vim.api.nvim_create_autocmd({"CursorMoved", "CursorMovedI"}, {
+		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 			callback = function()
 				if vim.b.navic_lazy_update_context ~= true then
 					lib.update_context(bufnr)
