@@ -7,6 +7,7 @@ local lib = require("nvim-navic.lib")
 ---@class Options
 ---@field icons table | nil
 ---@field highlight boolean | nil
+---@field separator string | nil
 ---@field format_text function | nil
 ---@field depth_limit number | nil
 ---@field depth_limit_indicator string | nil
