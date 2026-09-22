@@ -244,8 +244,6 @@ end
 
 -- Make request to lsp server
 function M.request_symbol(for_buf, handler, client, file_uri, retry_count)
-	local textDocument_argument = vim.lsp.util.make_text_document_params()
-
 	if retry_count == nil then
 		retry_count = 10
 	elseif retry_count == 0 then
@@ -253,16 +251,17 @@ function M.request_symbol(for_buf, handler, client, file_uri, retry_count)
 		return
 	end
 
+	if not vim.api.nvim_buf_is_loaded(for_buf) then
+		return
+	end
+
+	local textDocument_argument = vim.lsp.util.make_text_document_params(for_buf)
 	if file_uri ~= nil then
 		textDocument_argument = {
 			textDocument = {
 				uri = file_uri
 			}
 		}
-	end
-
-	if not vim.api.nvim_buf_is_loaded(for_buf) then
-		return
 	end
 
 	local function request(...)
