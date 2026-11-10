@@ -34,4 +34,12 @@ assert(requests[2] == expected_uri, "retry used the current buffer")
 vim.api.nvim_buf_delete(target, { force = true })
 lib.request_symbol(target, function() end, client)
 assert(#requests == 2, "requested symbols for a deleted buffer")
+-- An explicit file URI is sent as the document URI.
+local with_uri = vim.api.nvim_create_buf(true, false)
+lib.request_symbol(with_uri, function() end, {
+	request = function(_, _, params, handler, bufnr)
+		requests[#requests + 1] = params.textDocument.uri
+	end,
+}, "file:///explicit.ts")
+assert(requests[3] == "file:///explicit.ts", "file URI was not sent as the document URI")
 print("PASS: symbol requests target the supplied buffer, including retries")

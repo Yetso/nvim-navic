@@ -257,11 +257,7 @@ function M.request_symbol(for_buf, handler, client, file_uri, retry_count)
 
 	local textDocument_argument = vim.lsp.util.make_text_document_params(for_buf)
 	if file_uri ~= nil then
-		textDocument_argument = {
-			textDocument = {
-				uri = file_uri
-			}
-		}
+		textDocument_argument = { uri = file_uri }
 	end
 
 	local function request(...)
