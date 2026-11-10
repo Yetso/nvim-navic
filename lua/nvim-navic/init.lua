@@ -413,7 +413,8 @@ function M.attach(client, bufnr)
 	})
 
 	-- First call
-	vim.b[bufnr].navic_awaiting_lsp_response = true
+	awaiting_lsp_response[bufnr] = true
+	changedtick = vim.b[bufnr].changedtick
 	lib.request_symbol(bufnr, lsp_callback, client)
 end
 
